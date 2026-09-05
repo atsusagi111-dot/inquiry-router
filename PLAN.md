@@ -478,3 +478,16 @@ export interface Repo {
 6. README の手順どおりにデプロイし、D を手動確認
 
 コスト見積：Cloudflare Free 0 円 ＋ OpenAI 約 100 円未満（700 件 × 約 600 トークン。キーワード確定分はさらに減る）＋ Supabase 0 円 ＋ Slack Free 0 円 ＝ **月 100 円前後**（上限 1,000 円未満を満たす）。
+
+---
+
+## 実装時の設計変更（承認済みプランからの差分）
+
+- モック 4 本（fixtures-source / memory-repo / fake-classifier / recording-notifier）は各ブランチではなく main に置いた。classify / notify ブランチも CSV で単体確認する必要があったため
+- dead_letter を使うステージは notify のみ。ingest は cursor が進まないことで、classify は status='ingested' のままになることで、それぞれ次ティックが自然に再試行する。notify は失敗行を failed にして通常バッチから外し、dead_letter で 1→2→4→8→16 分後に 5 回再処理する（壊れた行がバッチを占有して新しい通知を止めないため）
+- `Repo.getById` を追加（dead_letter 再処理で DB の最新フラグを見るため）
+- OpenAI 呼び出しに `temperature` は送らない（gpt-5 系は受け付けないため）。出力の形は json_schema で固定
+- LLM が使えないときの fallback は、キーワードのヒントがあれば推定カテゴリを confidence=low で残す（Slack には「要確認（推定: ○○）」と出る）。振り分けは常に #未分類
+- 営業部長 DM の失敗は例外にせず、#緊急対応 に失敗した旨を投稿する（チャンネル投稿が成立していれば緊急通知は届いたとみなす）
+- Discord API のクライアントは discord-client.ts に共通化し、受信は discord-source.ts、送信は discord-notify.ts に分離
+- 環境変数は空文字列を未設定として扱う（.dev.vars の空値対策）

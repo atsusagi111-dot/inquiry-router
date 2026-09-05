@@ -5,3 +5,5 @@ dist/
 .dev.vars
 .env
 .worktrees/
+# 本番シークレットの一時ファイル（wrangler secret bulk 用）
+secrets.json
