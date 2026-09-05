@@ -102,6 +102,13 @@ curl "http://127.0.0.1:8787/__scheduled?cron=*+*+*+*+*"
    - 営業部長のユーザー → `DISCORD_SALES_MANAGER_USER_ID`
    - `@営業部` ロール（サーバー設定 → ロール → 右クリック）→ `DISCORD_SALES_ROLE_ID`
 6. Bot が `#お問い合わせ` と `#緊急対応` を閲覧・投稿できることをチャンネル権限で確認
+7. **署名検証付きの受信器（Interactions Endpoint）を登録する**
+   1. Developer Portal → **General Information** → **PUBLIC KEY** をコピー
+   2. `wrangler.toml` の `DISCORD_PUBLIC_KEY = ""` の `""` の間に貼り、`npm run deploy` で反映（公開鍵なのでシークレットにしなくてよい）
+   3. 同じ画面の **INTERACTIONS ENDPOINT URL** に `https://inquiry-router.<あなたのサブドメイン>.workers.dev/discord/interactions` を入力 → **Save Changes**
+      （URL は `npm run deploy` の出力に表示される）
+   4. Discord がその場で署名付きの確認リクエストを送り、検証に通れば保存される。通らないと「Could not verify」と出て保存できない
+      → 保存できた時点で「署名検証が通る Webhook 受信器」が動いていることを Discord 自身が確認したことになる
 
 > 営業部長への DM は、営業部長が「サーバーメンバーからの DM を許可」している必要があります。
 > 許可がないと DM は失敗しますが、その場合も `#緊急対応` への投稿は届き、失敗した旨がチャンネルに残ります。
@@ -227,6 +234,7 @@ npm run eval:llm          # 分類だけ本物の OpenAI で 22 件の精度を�
 | Gmail が `HTTP 401` / `invalid_grant` | リフレッシュトークン失効。OAuth 同意画面が「テスト」のままだと 7 日で切れる。§3 の手順で取り直す |
 | Discord が `HTTP 403` | Bot がチャンネルを見られない／投稿できない。チャンネル権限と招待時の権限を確認 |
 | Discord の本文が空で `#未分類` に行く | Message Content Intent が OFF。§4-3 を確認 |
+| Interactions Endpoint URL の保存で「Could not verify」 | `wrangler.toml` の `DISCORD_PUBLIC_KEY` が空か貼り間違い、または未デプロイ。§4-7 の手順で公開鍵を貼って `npm run deploy` してから再度保存 |
 | Slack に届かない | Webhook URL のチャンネル対応がずれている。`#未分類` に届くなら分類は動いている |
 | OpenAI が `HTTP 400` でモデル名エラー | `OPENAI_MODEL` を利用可能なモデル名に変更して再デプロイ |
 | すべて `#未分類` に行く | OpenAI 断か日次上限。`circuit_breakers` と `daily_counters` を確認。クレームはこの状態でも緊急通知される |

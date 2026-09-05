@@ -17,6 +17,8 @@ OPENAI_DAILY_LIMIT = "300"
 CLASSIFY_BATCH_SIZE = "10"
 NOTIFY_BATCH_SIZE = "10"
 GMAIL_QUERY = "in:inbox -category:promotions -category:social"
+# Discord Interactions Endpoint の署名検証用の公開鍵（Developer Portal > General Information > PUBLIC KEY）。秘密情報ではない
+DISCORD_PUBLIC_KEY = ""
 SLACK_CHANNEL_RENTAL = "#賃貸"
 SLACK_CHANNEL_SALES = "#売買"
 SLACK_CHANNEL_VIEWING = "#内見"

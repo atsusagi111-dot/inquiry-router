@@ -491,3 +491,4 @@ export interface Repo {
 - 営業部長 DM の失敗は例外にせず、#緊急対応 に失敗した旨を投稿する（チャンネル投稿が成立していれば緊急通知は届いたとみなす）
 - Discord API のクライアントは discord-client.ts に共通化し、受信は discord-source.ts、送信は discord-notify.ts に分離
 - 環境変数は空文字列を未設定として扱う（.dev.vars の空値対策）
+- Discord Interactions Endpoint（`POST /discord/interactions`）を追加。Ed25519 署名（`X-Signature-Ed25519` / `X-Signature-Timestamp`）を検証し、不正は 401、PING には PONG を返す。課題の受け入れ項目「署名検証が通る Webhook 受信器」を、LINE ではなく Discord の公式機構で満たすため。Worker が公開する HTTP 受け口はこの 1 つだけで、他のパスは 404

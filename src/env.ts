@@ -21,6 +21,8 @@ export const envSchema = z.object({
   DISCORD_URGENT_CHANNEL_ID: z.string().optional(),
   DISCORD_SALES_MANAGER_USER_ID: z.string().optional(),
   DISCORD_SALES_ROLE_ID: z.string().optional(),
+  // Interactions Endpoint の署名検証用。Developer Portal に表示される公開鍵（64 桁 hex）なので秘密ではない
+  DISCORD_PUBLIC_KEY: z.string().regex(/^[0-9a-fA-F]{64}$/, '64 桁の 16 進数').optional(),
 
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().default('gpt-5.6-luna'),
@@ -54,10 +56,13 @@ const REQUIRED_IN_REAL_MODE = [
   'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY',
 ] as const satisfies readonly (keyof Env)[];
 
+/** .dev.vars や wrangler secret で「値が空」のキーは未設定扱いにする（空文字列は URL 検証に落ちるため） */
+export function cleanEnv(raw: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== ''));
+}
+
 export function loadEnv(raw: Record<string, unknown>): Env {
-  // .dev.vars や wrangler secret で「値が空」のキーは未設定扱いにする（空文字列は URL 検証に落ちるため）
-  const cleaned = Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== ''));
-  const env = envSchema.parse(cleaned);
+  const env = envSchema.parse(cleanEnv(raw));
   if (!env.MOCK_EXTERNAL_API) {
     const missing = REQUIRED_IN_REAL_MODE.filter((k) => !env[k]);
     if (missing.length > 0) {
