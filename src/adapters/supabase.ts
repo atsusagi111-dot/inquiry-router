@@ -110,6 +110,10 @@ export class SupabaseRepo implements Repo {
     const rows = await this.json(`inquiries?status=eq.${status}&order=received_at.asc&limit=${limit}`, {}, z.array(inquiryRow), 'supabase.inquiries.list');
     return rows.map(toInquiry);
   }
+  async getById(id: string) {
+    const rows = await this.json(`inquiries?id=eq.${id}`, {}, z.array(inquiryRow), 'supabase.inquiries.get');
+    return rows[0] ? toInquiry(rows[0]) : null;
+  }
   async saveClassification(id: string, c: Classification, r: RoutingDecision) {
     await this.patch(`inquiries?id=eq.${id}`, {
       category: c.category,

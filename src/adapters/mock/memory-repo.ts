@@ -48,6 +48,7 @@ export class MemoryRepo implements Repo {
       .sort((a, b) => a.receivedAt.getTime() - b.receivedAt.getTime())
       .slice(0, limit);
   }
+  async getById(id: string) { return this.inquiries.get(id) ?? null; }
   async saveClassification(id: string, c: Classification, r: RoutingDecision) {
     const q = this.must(id);
     q.classification = c;
