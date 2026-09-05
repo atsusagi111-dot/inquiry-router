@@ -172,6 +172,7 @@ npx wrangler tail
 | 3 | `#お問い合わせ` に「先月入居した部屋のエアコンが効きません。至急対応してください。苦情です。」と投稿 | 5 分以内に Slack `#クレーム`、Discord `#緊急対応`（@営業部 付き）、営業部長 DM に届く |
 | 4 | `#お問い合わせ` に「退去時の敷金精算について教えてください。これは緊急ではありません。」と投稿 | Slack `#賃貸` にだけ届き、Discord には何も出ない |
 | 5 | Supabase の Table Editor で `inquiries` を開く | 上記 4 件が `status = notified` で並ぶ |
+| 6 | Developer Portal の INTERACTIONS ENDPOINT URL に受信器の URL を入力して保存（§4-7） | 保存できる（Discord が署名付き PING を送り、検証に通った証拠）。あわせて `curl -X POST .../discord/interactions -d '{}'` が `401` を返す |
 
 ---
 
