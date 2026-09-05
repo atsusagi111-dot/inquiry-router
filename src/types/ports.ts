@@ -48,6 +48,8 @@ export interface Repo {
 
   // --- classify / notify ---
   listByStatus(status: InquiryStatus, limit: number): Promise<Inquiry[]>;
+  /** dead_letter からの再処理で、DB の最新フラグを見て未送信分だけ送るために使う */
+  getById(id: string): Promise<Inquiry | null>;
   saveClassification(id: string, c: Classification, r: RoutingDecision): Promise<void>;
   markSlackNotified(id: string): Promise<void>;
   markUrgentNotified(id: string): Promise<void>;
