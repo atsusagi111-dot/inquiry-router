@@ -18,7 +18,7 @@ CLASSIFY_BATCH_SIZE = "10"
 NOTIFY_BATCH_SIZE = "10"
 GMAIL_QUERY = "in:inbox -category:promotions -category:social"
 # Discord Interactions Endpoint の署名検証用の公開鍵（Developer Portal > General Information > PUBLIC KEY）。秘密情報ではない
-DISCORD_PUBLIC_KEY = ""
+DISCORD_PUBLIC_KEY = "f3572d7b0ccb27d0975fafa6f9efcd865ced6050d2737787b02752a43ffc575c"
 SLACK_CHANNEL_RENTAL = "#賃貸"
 SLACK_CHANNEL_SALES = "#売買"
 SLACK_CHANNEL_VIEWING = "#内見"
