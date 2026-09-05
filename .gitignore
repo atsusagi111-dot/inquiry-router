@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.wrangler/
+# ローカルの秘密情報。絶対にコミットしない
+.dev.vars
+.env
+.worktrees/

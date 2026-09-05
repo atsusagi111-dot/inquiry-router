@@ -1,0 +1,33 @@
+name = "inquiry-router"
+main = "src/index.ts"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+# 毎分実行。Cron Triggers は Free プランでも使える。
+# Free は 1 呼び出し CPU 10ms のため、1 ティックの処理件数は *_BATCH_SIZE で小さく区切る
+[triggers]
+crons = ["* * * * *"]
+
+# 秘密でない設定値だけをここに書く。API キー類は絶対に書かず `wrangler secret put` を使う
+[vars]
+MOCK_EXTERNAL_API = "false"
+LOG_LEVEL = "info"
+OPENAI_MODEL = "gpt-5.6-luna"
+OPENAI_DAILY_LIMIT = "300"
+CLASSIFY_BATCH_SIZE = "10"
+NOTIFY_BATCH_SIZE = "10"
+GMAIL_QUERY = "in:inbox -category:promotions -category:social"
+SLACK_CHANNEL_RENTAL = "#賃貸"
+SLACK_CHANNEL_SALES = "#売買"
+SLACK_CHANNEL_VIEWING = "#内見"
+SLACK_CHANNEL_COMPLAINT = "#クレーム"
+SLACK_CHANNEL_UNSORTED = "#未分類"
+
+# CSV を文字列として import できるようにする（モック時に Worker 内で fixtures を読むため）
+[[rules]]
+type = "Text"
+globs = ["**/*.csv"]
+fallthrough = true
+
+[observability]
+enabled = true

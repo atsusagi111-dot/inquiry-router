@@ -1,0 +1,25 @@
+{
+  "name": "inquiry-router",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "fixtures": "cross-env MOCK_EXTERNAL_API=true tsx scripts/run-fixtures.ts",
+    "eval:llm": "cross-env MOCK_EXTERNAL_API=true tsx scripts/run-fixtures.ts --real-llm"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "cross-env": "^7.0.3",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0",
+    "wrangler": "^4.0.0"
+  }
+}
