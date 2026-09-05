@@ -55,7 +55,9 @@ const REQUIRED_IN_REAL_MODE = [
 ] as const satisfies readonly (keyof Env)[];
 
 export function loadEnv(raw: Record<string, unknown>): Env {
-  const env = envSchema.parse(raw);
+  // .dev.vars や wrangler secret で「値が空」のキーは未設定扱いにする（空文字列は URL 検証に落ちるため）
+  const cleaned = Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== ''));
+  const env = envSchema.parse(cleaned);
   if (!env.MOCK_EXTERNAL_API) {
     const missing = REQUIRED_IN_REAL_MODE.filter((k) => !env[k]);
     if (missing.length > 0) {
